@@ -133,7 +133,9 @@ class JEPA(nn.Module):
         device = next(self.parameters()).device
         for k in list(info_dict.keys()):
             if torch.is_tensor(info_dict[k]):
-                info_dict[k] = info_dict[k].to(device)
+                dtype = torch.float32 if torch.is_floating_point(info_dict[k]) else None
+                info_dict[k] = info_dict[k].to(device=device, dtype=dtype)
+        action_candidates = action_candidates.to(device=device, dtype=torch.float32)
 
         goal = {k: v[:, 0] for k, v in info_dict.items() if torch.is_tensor(v)}
         goal["pixels"] = goal["goal"]
@@ -150,4 +152,4 @@ class JEPA(nn.Module):
 
         cost = self.criterion(info_dict)
         
-        return cost
+        return cost.cpu() if device.type == "mps" else cost

@@ -1,6 +1,7 @@
 import os
+import sys
 
-os.environ["MUJOCO_GL"] = "egl"
+os.environ["MUJOCO_GL"] = "glfw" if sys.platform == "darwin" else "egl"
 
 import time
 from pathlib import Path
@@ -9,7 +10,7 @@ import hydra
 import numpy as np
 import stable_pretraining as spt
 import torch
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf, open_dict
 from sklearn import preprocessing
 from torchvision.transforms import v2 as transforms
 import stable_worldmodel as swm
@@ -86,11 +87,16 @@ def run(cfg: DictConfig):
 
     if policy != "random":
         model = swm.policy.AutoCostModel(cfg.policy)
-        model = model.to("cuda")
+        device = "mps" if torch.backends.mps.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"Using device: {device}")
+        model = model.to(device)
         model = model.eval()
         model.requires_grad_(False)
         model.interpolate_pos_encoding = True
         config = swm.PlanConfig(**cfg.plan_config)
+        if device == "mps" and "device" in cfg.solver:
+            with open_dict(cfg.solver):
+                cfg.solver.device = "cpu"
         solver = hydra.utils.instantiate(cfg.solver, model=model)
         policy = swm.policy.WorldModelPolicy(
             solver=solver, config=config, process=process, transform=transform
