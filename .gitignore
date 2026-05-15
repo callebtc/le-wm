@@ -1,0 +1,51 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments and local env files
+.venv/
+venv/
+.env
+.env.*
+
+# macOS/editor noise
+.DS_Store
+.idea/
+.vscode/
+
+# Generated datasets and model outputs
+data/
+outputs/
+*.h5
+*.hdf5
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+
+# Generated media and experiment artifacts
+visualizations/
+*.mp4
+*.mov
+*.avi
+*.gif
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Training/logging outputs
+wandb/
+lightning_logs/
+logs/
+*.log
+*.csv
+
+# Downloaded papers and packaged local skills
+*.pdf
+*.skill
+skills-lock.json
