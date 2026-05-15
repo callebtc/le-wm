@@ -37,6 +37,7 @@ visualizations/
 *.jpg
 *.jpeg
 *.webp
+!assets/snake_data_high_score_ep87.mp4
 
 # Training/logging outputs
 wandb/
