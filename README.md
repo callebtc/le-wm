@@ -91,6 +91,14 @@ This branch includes a self-contained Snake world-model experiment under
 training scripts, controllers, evaluation utilities, and visualizations separate
 from the upstream LeWM files.
 
+<video src="assets/snake_data_high_score_ep87.mp4" controls width="640"></video>
+
+The clip above shows one high-score trajectory from the generated Snake dataset.
+In this branch, we built a seedable wrap-around Snake simulator, generated mixed
+behavior datasets with edge crossings and failures, trained a LeWM-style latent
+world model from pixels and actions, and evaluated learned controllers with
+prediction and rollout visualizations.
+
 See `snake/README.md` for the full reproducible pipeline, including dataset
 generation, losses, model architecture, training commands, prediction checks,
 and control videos.
