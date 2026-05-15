@@ -1,0 +1,23 @@
+{
+  "skill_name": "lewm-world-model",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a custom grid game with discrete actions and rendered frames. Build the data/training/evaluation plan for a LeWM-style world model that can play it, including what to put in the HDF5 dataset and what videos to render.",
+      "expected_output": "A complete end-to-end plan covering simulator interface, HDF5 schema, mixed-policy data collection, LeWM training, discrete planning, prediction diagnostics, multi-seed evaluation, and representative videos.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We want to learn a world model for a robot from joint positions and force sensors, not pixels. How should we adapt the LeWM pipeline and how do we evaluate if the latent model works?",
+      "expected_output": "Guidance for replacing the pixel encoder with a structured sensor encoder while preserving latent prediction plus SIGReg, plus probes, planning, dataset coverage, and evaluation metrics.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I trained a LeWM model and the one-step prediction videos look good, but the open-loop rollout drifts after 10 steps. What should I do before using it for control?",
+      "expected_output": "A diagnosis explaining expected open-loop drift, recommending short-horizon MPC/replanning, goal reachability checks, discrete/continuous planner choice, dataset coverage improvements, and honest visualization/reporting.",
+      "files": []
+    }
+  ]
+}
