@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import sys
 from itertools import product
 from pathlib import Path
 
@@ -11,9 +12,15 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 from module import SIGReg
 from snakewm import SnakeGame
 from snakewm.model import SnakeLeWM
+
+SNAKE_DIR = Path(__file__).resolve().parent
 
 
 class SnakeLeWMDataset(Dataset):
@@ -452,8 +459,8 @@ def to_device(batch: dict[str, torch.Tensor], device: str) -> dict[str, torch.Te
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train a Snake LeWM-style latent world model")
-    parser.add_argument("--data", default="data/snake.h5")
-    parser.add_argument("--output", default="outputs/snake_lewm.pt")
+    parser.add_argument("--data", default=str(SNAKE_DIR / "data" / "snake.h5"))
+    parser.add_argument("--output", default=str(SNAKE_DIR / "outputs" / "snake_lewm.pt"))
     parser.add_argument("--resume", default="", help="Checkpoint to load before continuing training")
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--batch-size", type=int, default=256)

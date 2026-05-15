@@ -10,6 +10,8 @@ import torch
 
 from snakewm.model import SnakeLeWM
 
+SNAKE_DIR = Path(__file__).resolve().parent
+
 
 def main(args: argparse.Namespace) -> None:
     device = pick_device(args.device)
@@ -108,9 +110,9 @@ def pick_device(device: str) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Visualize Snake LeWM latent predictions")
-    parser.add_argument("--data", default="data/snake.h5")
-    parser.add_argument("--model", default="outputs/snake_lewm.pt")
-    parser.add_argument("--output", default="visualizations/snake_lewm_prediction_teacher_forced.mp4")
+    parser.add_argument("--data", default=str(SNAKE_DIR / "data" / "snake.h5"))
+    parser.add_argument("--model", default=str(SNAKE_DIR / "outputs" / "snake_lewm.pt"))
+    parser.add_argument("--output", default=str(SNAKE_DIR / "visualizations" / "snake_lewm_prediction_teacher_forced.mp4"))
     parser.add_argument("--episode", type=int, default=206)
     parser.add_argument("--horizon", type=int, default=100)
     parser.add_argument("--fps", type=float, default=8.0)

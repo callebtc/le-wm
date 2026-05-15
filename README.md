@@ -84,6 +84,17 @@ python eval.py --config-name=pusht.yaml policy=pusht/lewm
 python eval.py --config-name=pusht.yaml policy=pusht/lewm_object.ckpt
 ```
 
+## Snake Experiment
+
+This branch includes a self-contained Snake world-model experiment under
+`snake/`. It keeps the custom simulator, dataset generation, LeWM-style Snake
+training scripts, controllers, evaluation utilities, and visualizations separate
+from the upstream LeWM files.
+
+See `snake/README.md` for the full reproducible pipeline, including dataset
+generation, losses, model architecture, training commands, prediction checks,
+and control videos.
+
 ## Pretrained Checkpoints
 
 Pretrained LeWM checkpoints for each environment are mirrored on the Hugging Face

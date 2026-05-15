@@ -5,12 +5,14 @@ from pathlib import Path
 import imageio.v2 as imageio
 import numpy as np
 
+SNAKE_DIR = Path(__file__).resolve().parent
+
 
 VIDEOS = [
-    ("planner weak seed=0 score=3", Path("visualizations/snake_lewm_planner_weak_seed0.mp4")),
-    ("planner median seed=16 score=20", Path("visualizations/snake_lewm_planner_median_seed16.mp4")),
-    ("planner strong seed=28 score=23", Path("visualizations/snake_lewm_planner_strong_seed28.mp4")),
-    ("policy strong seed=28 score=22", Path("visualizations/snake_lewm_policy_strong_seed28.mp4")),
+    ("planner weak seed=0 score=3", SNAKE_DIR / "visualizations" / "snake_lewm_planner_weak_seed0.mp4"),
+    ("planner median seed=16 score=20", SNAKE_DIR / "visualizations" / "snake_lewm_planner_median_seed16.mp4"),
+    ("planner strong seed=28 score=23", SNAKE_DIR / "visualizations" / "snake_lewm_planner_strong_seed28.mp4"),
+    ("policy strong seed=28 score=22", SNAKE_DIR / "visualizations" / "snake_lewm_policy_strong_seed28.mp4"),
 ]
 
 
@@ -33,7 +35,7 @@ def main() -> None:
         bottom = np.hstack([padded[2][i], padded[3][i]])
         out_frames.append(np.vstack([top, bottom]))
 
-    output = Path("visualizations/snake_lewm_showcase.mp4")
+    output = SNAKE_DIR / "visualizations" / "snake_lewm_showcase.mp4"
     imageio.mimsave(output, out_frames, fps=10, codec="libx264", macro_block_size=1)
     print(f"Wrote {output}")
 

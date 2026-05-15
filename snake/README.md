@@ -9,28 +9,28 @@ visualizers, and controllers that emit playable action signals and videos.
 Keyboard mode:
 
 ```bash
-uv run python run_snake_controller.py --controller keyboard --seed 7
+uv run python snake/run_snake_controller.py --controller keyboard --seed 7
 ```
 
 Autonomous MPC mode:
 
 ```bash
-uv run python run_snake_controller.py \
+uv run python snake/run_snake_controller.py \
   --controller mpc \
   --horizon 4 \
   --steps 180 \
   --seed 7 \
-  --video visualizations/snake_solution_mpc_wrap.mp4 \
-  --actions-out outputs/snake_actions.txt
+  --video snake/visualizations/snake_solution_mpc_wrap.mp4 \
+  --actions-out snake/outputs/snake_actions.txt
 ```
 
 The action signal is written as one action name per line in
-`outputs/snake_actions.txt`.
+`snake/outputs/snake_actions.txt`.
 
 Scripted mode:
 
 ```bash
-uv run python run_snake_controller.py \
+uv run python snake/run_snake_controller.py \
   --controller scripted \
   --actions right,right,down,left \
   --steps 20
@@ -39,32 +39,32 @@ uv run python run_snake_controller.py \
 Learned-model one-step control mode:
 
 ```bash
-uv run python run_snake_controller.py \
+uv run python snake/run_snake_controller.py \
   --controller model \
-  --model outputs/snake_world_model.pt \
+  --model snake/outputs/snake_world_model.pt \
   --steps 120 \
-  --video visualizations/snake_model_controller.mp4
+  --video snake/visualizations/snake_model_controller.mp4
 ```
 
 LeWM latent controller mode:
 
 ```bash
-uv run python run_snake_controller.py \
+uv run python snake/run_snake_controller.py \
   --controller lewm \
   --lewm-mode planner \
-  --lewm-model outputs/snake_lewm.pt \
+  --lewm-model snake/outputs/snake_lewm.pt \
   --horizon 5 \
   --steps 180 \
   --seed 7 \
-  --video visualizations/snake_lewm_planner.mp4 \
-  --actions-out outputs/snake_lewm_planner_actions.txt
+  --video snake/visualizations/snake_lewm_planner.mp4 \
+  --actions-out snake/outputs/snake_lewm_planner_actions.txt
 ```
 
 ## Generate Dataset
 
 ```bash
-uv run python generate_snake_dataset.py \
-  --output data/snake.h5 \
+uv run python snake/generate_snake_dataset.py \
+  --output snake/data/snake.h5 \
   --episodes 360 \
   --steps 240 \
   --controller mix \
@@ -89,18 +89,18 @@ The HDF5 file contains:
 Render dataset examples:
 
 ```bash
-uv run python visualize_snake_dataset.py \
-  --data data/snake.h5 \
-  --output-dir visualizations \
+uv run python snake/visualize_snake_dataset.py \
+  --data snake/data/snake.h5 \
+  --output-dir snake/visualizations \
   --count 4
 ```
 
 ## Train Compact Snake World Model
 
 ```bash
-uv run python train_snake_world_model.py \
-  --data data/snake.h5 \
-  --output outputs/snake_world_model.pt \
+uv run python snake/train_snake_world_model.py \
+  --data snake/data/snake.h5 \
+  --output snake/outputs/snake_world_model.pt \
   --epochs 16 \
   --batch-size 512 \
   --device auto
@@ -114,9 +114,9 @@ CUDA GPUs through `DataParallel`.
 ## Train Snake LeWM Latent Model
 
 ```bash
-uv run python train_snake_lewm.py \
-  --data data/snake.h5 \
-  --output outputs/snake_lewm.pt \
+uv run python snake/train_snake_lewm.py \
+  --data snake/data/snake.h5 \
+  --output snake/outputs/snake_lewm.pt \
   --epochs 12 \
   --batch-size 512 \
   --device auto
@@ -130,10 +130,10 @@ HDF5 reads.
 Render LeWM latent prediction checks:
 
 ```bash
-uv run python visualize_snake_lewm_predictions.py \
-  --data data/snake.h5 \
-  --model outputs/snake_lewm.pt \
-  --output visualizations/snake_lewm_prediction_teacher_forced.mp4 \
+uv run python snake/visualize_snake_lewm_predictions.py \
+  --data snake/data/snake.h5 \
+  --model snake/outputs/snake_lewm.pt \
+  --output snake/visualizations/snake_lewm_prediction_teacher_forced.mp4 \
   --episode 206 \
   --horizon 120 \
   --teacher-forcing
@@ -142,10 +142,10 @@ uv run python visualize_snake_lewm_predictions.py \
 Render prediction checks:
 
 ```bash
-uv run python visualize_snake_predictions.py \
-  --data data/snake.h5 \
-  --model outputs/snake_world_model.pt \
-  --output visualizations/snake_prediction_teacher_forced.mp4 \
+uv run python snake/visualize_snake_predictions.py \
+  --data snake/data/snake.h5 \
+  --model snake/outputs/snake_world_model.pt \
+  --output snake/visualizations/snake_prediction_teacher_forced.mp4 \
   --episode 206 \
   --horizon 120 \
   --teacher-forcing
@@ -153,14 +153,17 @@ uv run python visualize_snake_predictions.py \
 
 ## Train LeWM On Snake Pixels
 
-The file `config/train/data/snake.yaml` points the existing LeWM training script
-at `data/snake.h5`:
+The file `snake/config/train/data/snake.yaml` points the existing LeWM training script
+at `snake/data/snake.h5`:
 
 ```bash
 uv run python train.py data=snake wandb.enabled=false trainer.max_epochs=10
 ```
 
-This uses the standard pixel JEPA path and consumes the same `pixels` and
+To keep the root repo close to the upstream LeWM layout, this Snake-specific
+Hydra data config lives under `snake/config`. If you want to use the upstream
+`train.py data=snake` command, copy or symlink this file into
+`config/train/data/snake.yaml` first. The config consumes the same `pixels` and
 `action` columns exported by the dataset generator.
 
 ## Reproducible Methods
@@ -173,7 +176,7 @@ Snake-specific scaffolding.
 
 ### Environment
 
-The environment is implemented in `snakewm/game.py` as `SnakeGame`.
+The environment is implemented in `snake/snakewm/game.py` as `SnakeGame`.
 
 Board and rendering:
 
@@ -231,8 +234,8 @@ Datasets are generated with `generate_snake_dataset.py` and saved as HDF5.
 The most recent dataset was generated with:
 
 ```bash
-uv run python generate_snake_dataset.py \
-  --output data/snake.h5 \
+uv run python snake/generate_snake_dataset.py \
+  --output snake/data/snake.h5 \
   --episodes 420 \
   --steps 260 \
   --controller mix \
@@ -280,7 +283,7 @@ HDF5 columns:
 The dataset deliberately mixes good, bad, and edge-case behavior. This matters
 because world models need dynamics coverage, not only expert demonstrations.
 
-Controllers are implemented in `snakewm/controllers.py`.
+Controllers are implemented in `snake/snakewm/controllers.py`.
 
 Random controller:
 
@@ -317,7 +320,7 @@ edge wrapping, self-collisions, and non-expert behavior.
 
 There are two learned model families in this repo.
 
-The main model is `SnakeLeWM` in `snakewm/model.py`. It is the LeWM-style pixel
+The main model is `SnakeLeWM` in `snake/snakewm/model.py`. It is the LeWM-style pixel
 latent model used for current control results.
 
 The older baseline is `SnakeDynamicsModel`, a supervised structured-state model
@@ -529,9 +532,9 @@ Hardware:
 Initial training command:
 
 ```bash
-uv run python train_snake_lewm.py \
-  --data data/snake.h5 \
-  --output outputs/snake_lewm.pt \
+uv run python snake/train_snake_lewm.py \
+  --data snake/data/snake.h5 \
+  --output snake/outputs/snake_lewm.pt \
   --epochs 12 \
   --batch-size 512 \
   --lr 0.0005 \
@@ -548,10 +551,10 @@ uv run python train_snake_lewm.py \
 Continued training command:
 
 ```bash
-uv run python train_snake_lewm.py \
-  --data data/snake.h5 \
-  --resume outputs/snake_lewm.pt \
-  --output outputs/snake_lewm_continued.pt \
+uv run python snake/train_snake_lewm.py \
+  --data snake/data/snake.h5 \
+  --resume snake/outputs/snake_lewm.pt \
+  --output snake/outputs/snake_lewm_continued.pt \
   --epochs 8 \
   --batch-size 512 \
   --lr 0.00025 \
@@ -563,7 +566,7 @@ uv run python train_snake_lewm.py \
   --device auto \
   --num-workers 0 \
   --log-every 20 \
-  --metrics-csv outputs/snake_lewm_continue_metrics.csv \
+  --metrics-csv snake/outputs/snake_lewm_continue_metrics.csv \
   --control-eval-seeds 6 \
   --control-eval-steps 180 \
   --control-eval-horizon 4 \
@@ -573,15 +576,15 @@ uv run python train_snake_lewm.py \
 The continued run writes per-epoch metrics to:
 
 ```text
-outputs/snake_lewm_continue_metrics.csv
+snake/outputs/snake_lewm_continue_metrics.csv
 ```
 
 Plot the continued training loss and score with:
 
 ```bash
-uv run python plot_snake_training.py \
-  --metrics outputs/snake_lewm_continue_metrics.csv \
-  --output visualizations/snake_lewm_continue_training_curves.png
+uv run python snake/plot_snake_training.py \
+  --metrics snake/outputs/snake_lewm_continue_metrics.csv \
+  --output snake/visualizations/snake_lewm_continue_training_curves.png
 ```
 
 ### Learned Control Algorithm
@@ -626,15 +629,15 @@ Safety shield:
 Representative command:
 
 ```bash
-uv run python run_snake_controller.py \
+uv run python snake/run_snake_controller.py \
   --controller lewm \
   --lewm-mode planner \
-  --lewm-model outputs/snake_lewm.pt \
+  --lewm-model snake/outputs/snake_lewm.pt \
   --horizon 5 \
   --steps 180 \
   --seed 16 \
-  --video visualizations/snake_lewm_planner_median_seed16.mp4 \
-  --actions-out outputs/snake_lewm_planner_median_seed16_actions.txt
+  --video snake/visualizations/snake_lewm_planner_median_seed16.mp4 \
+  --actions-out snake/outputs/snake_lewm_planner_median_seed16_actions.txt
 ```
 
 ### Evaluation Protocol
@@ -649,7 +652,7 @@ Metrics:
 - Steps survived.
 - Mean, median, max, weak, median, and strong representative runs.
 
-Initial 30-seed benchmark for `outputs/snake_lewm.pt`:
+Initial 30-seed benchmark for `snake/outputs/snake_lewm.pt`:
 
 ```text
 mean_score: 18.37
@@ -661,7 +664,7 @@ median: seed 16, score 20
 strong: seed 28, score 23
 ```
 
-Continued checkpoint benchmark for `outputs/snake_lewm_continued.pt`:
+Continued checkpoint benchmark for `snake/outputs/snake_lewm_continued.pt`:
 
 ```text
 mean_score: 18.83
@@ -684,8 +687,8 @@ Interpretation:
 Dataset visualizations:
 
 ```bash
-uv run python visualize_snake_dataset.py \
-  --data data/snake.h5 \
+uv run python snake/visualize_snake_dataset.py \
+  --data snake/data/snake.h5 \
   --output-dir visualizations \
   --count 4
 ```
@@ -695,10 +698,10 @@ This renders examples such as edge crossing, failure, high-score, and sample epi
 LeWM prediction visualization:
 
 ```bash
-uv run python visualize_snake_lewm_predictions.py \
-  --data data/snake.h5 \
-  --model outputs/snake_lewm.pt \
-  --output visualizations/snake_lewm_prediction_teacher_forced.mp4 \
+uv run python snake/visualize_snake_lewm_predictions.py \
+  --data snake/data/snake.h5 \
+  --model snake/outputs/snake_lewm.pt \
+  --output snake/visualizations/snake_lewm_prediction_teacher_forced.mp4 \
   --episode 206 \
   --horizon 120 \
   --teacher-forcing
@@ -712,37 +715,37 @@ into the model. Drift is expected and is why the controller replans every step.
 
 Representative control videos:
 
-- `visualizations/snake_lewm_planner_weak_seed0.mp4`
-- `visualizations/snake_lewm_planner_median_seed16.mp4`
-- `visualizations/snake_lewm_planner_strong_seed28.mp4`
-- `visualizations/snake_lewm_showcase.mp4`
-- `visualizations/snake_lewm_continued_median_seed23.mp4`
-- `visualizations/snake_lewm_continued_strong_seed28.mp4`
+- `snake/visualizations/snake_lewm_planner_weak_seed0.mp4`
+- `snake/visualizations/snake_lewm_planner_median_seed16.mp4`
+- `snake/visualizations/snake_lewm_planner_strong_seed28.mp4`
+- `snake/visualizations/snake_lewm_showcase.mp4`
+- `snake/visualizations/snake_lewm_continued_median_seed23.mp4`
+- `snake/visualizations/snake_lewm_continued_strong_seed28.mp4`
 
 The best single representative video for the initial checkpoint is:
 
 ```text
-visualizations/snake_lewm_planner_median_seed16.mp4
+snake/visualizations/snake_lewm_planner_median_seed16.mp4
 ```
 
 The best overview video is:
 
 ```text
-visualizations/snake_lewm_showcase.mp4
+snake/visualizations/snake_lewm_showcase.mp4
 ```
 
 ### Reproducibility Checklist
 
 To reproduce the current experiment from scratch:
 
-1. Generate `data/snake.h5` with the latest dataset command above.
+1. Generate `snake/data/snake.h5` with the latest dataset command above.
 2. Render dataset videos with `visualize_snake_dataset.py`.
-3. Train `outputs/snake_lewm.pt` with the initial SnakeLeWM command.
+3. Train `snake/outputs/snake_lewm.pt` with the initial SnakeLeWM command.
 4. Render prediction videos with `visualize_snake_lewm_predictions.py`.
 5. Evaluate 30 seeds with `SnakeLeWMController` in planner mode.
 6. Render weak, median, and strong videos.
-7. Optionally continue training from `outputs/snake_lewm.pt`.
-8. Plot `outputs/snake_lewm_continue_metrics.csv` with `plot_snake_training.py`.
+7. Optionally continue training from `snake/outputs/snake_lewm.pt`.
+8. Plot `snake/outputs/snake_lewm_continue_metrics.csv` with `snake/plot_snake_training.py`.
 9. Compare original and continued checkpoints on the same fixed seeds.
 
 ### Key Caveats

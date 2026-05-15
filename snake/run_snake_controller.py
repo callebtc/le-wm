@@ -13,6 +13,8 @@ from snakewm.game import play_keyboard, run_episode
 from snakewm.game import action_to_one_hot
 from snakewm.model import SnakeDynamicsModel, SnakeLeWM
 
+SNAKE_DIR = Path(__file__).resolve().parent
+
 
 def main(args: argparse.Namespace) -> None:
     game = SnakeGame(width=args.width, height=args.height, seed=args.seed)
@@ -53,11 +55,11 @@ def parse_args() -> argparse.Namespace:
         choices=("keyboard", "random", "greedy", "mpc", "edge", "scripted", "model", "lewm"),
         default="mpc",
     )
-    parser.add_argument("--video", default="visualizations/snake_solution.mp4")
-    parser.add_argument("--actions-out", default="outputs/snake_actions.txt")
+    parser.add_argument("--video", default=str(SNAKE_DIR / "visualizations" / "snake_solution.mp4"))
+    parser.add_argument("--actions-out", default=str(SNAKE_DIR / "outputs" / "snake_actions.txt"))
     parser.add_argument("--actions", default="", help="Comma-separated actions for scripted mode")
-    parser.add_argument("--model", default="outputs/snake_world_model.pt")
-    parser.add_argument("--lewm-model", default="outputs/snake_lewm.pt")
+    parser.add_argument("--model", default=str(SNAKE_DIR / "outputs" / "snake_world_model.pt"))
+    parser.add_argument("--lewm-model", default=str(SNAKE_DIR / "outputs" / "snake_lewm.pt"))
     parser.add_argument("--lewm-mode", choices=("policy", "planner"), default="planner")
     parser.add_argument("--device", default="auto")
     parser.add_argument("--steps", type=int, default=300)

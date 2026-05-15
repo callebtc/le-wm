@@ -6,6 +6,8 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
+SNAKE_DIR = Path(__file__).resolve().parent
+
 
 def main(args: argparse.Namespace) -> None:
     rows = read_rows(Path(args.metrics))
@@ -50,8 +52,8 @@ def read_rows(path: Path) -> list[dict[str, str]]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Plot Snake LeWM loss and control score over epochs")
-    parser.add_argument("--metrics", default="outputs/snake_lewm_continue_metrics.csv")
-    parser.add_argument("--output", default="visualizations/snake_lewm_training_curves.png")
+    parser.add_argument("--metrics", default=str(SNAKE_DIR / "outputs" / "snake_lewm_continue_metrics.csv"))
+    parser.add_argument("--output", default=str(SNAKE_DIR / "visualizations" / "snake_lewm_training_curves.png"))
     return parser.parse_args()
 
 

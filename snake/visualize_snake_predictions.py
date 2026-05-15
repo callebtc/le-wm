@@ -10,6 +10,8 @@ import torch
 
 from snakewm.model import SnakeDynamicsModel
 
+SNAKE_DIR = Path(__file__).resolve().parent
+
 
 def main(args: argparse.Namespace) -> None:
     device = pick_device(args.device)
@@ -123,9 +125,9 @@ def pick_device(device: str) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Render actual-vs-predicted Snake model rollouts")
-    parser.add_argument("--data", default="data/snake.h5")
-    parser.add_argument("--model", default="outputs/snake_world_model.pt")
-    parser.add_argument("--output", default="visualizations/snake_prediction_rollout.mp4")
+    parser.add_argument("--data", default=str(SNAKE_DIR / "data" / "snake.h5"))
+    parser.add_argument("--model", default=str(SNAKE_DIR / "outputs" / "snake_world_model.pt"))
+    parser.add_argument("--output", default=str(SNAKE_DIR / "visualizations" / "snake_prediction_rollout.mp4"))
     parser.add_argument("--episode", type=int, default=0)
     parser.add_argument("--horizon", type=int, default=80)
     parser.add_argument("--fps", type=float, default=8.0)

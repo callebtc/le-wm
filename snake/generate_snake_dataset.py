@@ -16,6 +16,7 @@ from snakewm import (
 )
 
 CONTROLLER_IDS = {"random": 0, "greedy": 1, "mpc": 2, "edge": 3, "scripted": 4}
+SNAKE_DIR = Path(__file__).resolve().parent
 
 
 def build_dataset(args: argparse.Namespace) -> None:
@@ -134,7 +135,7 @@ def pick_controller(args: argparse.Namespace, episode: int) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate snake.h5 for LeWM and Snake world-model training")
-    parser.add_argument("--output", default="data/snake.h5")
+    parser.add_argument("--output", default=str(SNAKE_DIR / "data" / "snake.h5"))
     parser.add_argument("--episodes", type=int, default=200)
     parser.add_argument("--steps", type=int, default=200)
     parser.add_argument("--width", type=int, default=12)

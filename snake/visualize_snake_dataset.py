@@ -7,6 +7,8 @@ import h5py
 import imageio.v2 as imageio
 import numpy as np
 
+SNAKE_DIR = Path(__file__).resolve().parent
+
 
 def main(args: argparse.Namespace) -> None:
     data = Path(args.data)
@@ -69,8 +71,8 @@ def select_episodes(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Render example episodes from snake.h5")
-    parser.add_argument("--data", default="data/snake.h5")
-    parser.add_argument("--output-dir", default="visualizations")
+    parser.add_argument("--data", default=str(SNAKE_DIR / "data" / "snake.h5"))
+    parser.add_argument("--output-dir", default=str(SNAKE_DIR / "visualizations"))
     parser.add_argument("--count", type=int, default=4)
     parser.add_argument("--max-frames", type=int, default=240)
     parser.add_argument("--fps", type=float, default=12.0)

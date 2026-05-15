@@ -11,6 +11,8 @@ from torch.utils.data import DataLoader, TensorDataset, random_split
 
 from snakewm.model import SnakeDynamicsModel
 
+SNAKE_DIR = Path(__file__).resolve().parent
+
 
 def load_dataset(path: Path) -> TensorDataset:
     with h5py.File(path, "r") as f:
@@ -156,8 +158,8 @@ def device_uses_cuda(device: str) -> bool:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train a compact action-conditioned Snake world model")
-    parser.add_argument("--data", default="data/snake.h5")
-    parser.add_argument("--output", default="outputs/snake_world_model.pt")
+    parser.add_argument("--data", default=str(SNAKE_DIR / "data" / "snake.h5"))
+    parser.add_argument("--output", default=str(SNAKE_DIR / "outputs" / "snake_world_model.pt"))
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=3e-4)
